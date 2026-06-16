@@ -71,31 +71,15 @@ int main()
 		switch (menu_select())
 		{
 		case 1:
-			printf("*****输入学生、课程、选课信息*****\n");
-			switch (menu1_select())
-			{
-			case 1:
-				//通过指定的文件装入相关必要信息
-				init(slist, &scount, clist, &ccount, sclist, &sccount);
-				printf("文件信息导入完成\n");
-				break;
-			case 2:
-				//输入学生信息记录
-				scount = input_stud(slist, scount);
-				break;
-			case 3:
-				//输入课程信息记录
-				ccount = input_course(clist, ccount);
-				break;
-			case 4:
-				//输入选课记录
-				sccount = input_select(sclist, sccount);
-				break;
-			}
+			system("cls");
+			printf("*****导入初始数据*****\n");
+			//通过指定的文件装入相关必要信息
+			init(slist, &scount, clist, &ccount, sclist, &sccount);
+			printf("文件信息导入结束\n");
 			system("pause");
 			break;
 		case 2:
-			printf("*****显示所有数据*****\n");
+			printf("*****显示信息*****\n");
 			switch (menu2_select())
 			{
 			case 1:
@@ -103,28 +87,53 @@ int main()
 				sort_slist(slist, scount);
 				//显示所有学生信息(10条一页)
 				disp_stud(slist, scount);
+				printf("\n数据展示完成\n");
 				break;
 			case 2:
 				// 按照课程号升序排序
 				sort_clist(clist, ccount);
 				//显示所有课程信息(10条一页)
 				disp_course(clist, ccount);
+				printf("\n数据展示完成\n");
 				break;
 			case 3:
-				//显示学生信息表、课程信息表和成绩单(加权平均分和总学分)
+				//根据学生信息表和课程信息表创建成绩单(平均分和总学分)
 				cjcount = create_cjlist(slist, scount, sclist, sccount, clist, ccount, cjlist);
 				// 按照平均成绩降序排序
 				sort_cjlist(cjlist, cjcount);
 				//显示成绩单信息(10条一页)
 				disp_cjlist(cjlist, cjcount, clist, ccount, slist, scount);
+				printf("\n数据展示完成\n");
+				break;
+			case 0:
 				break;
 			}
-			printf("\n数据展示完成\n");
 			system("pause");
 			break;
 		case 3:
-			printf("*****按条件删除记录*****\n");
+			printf("*****输入记录*****\n");
 			switch (menu3_select())
+			{
+			case 1:
+				//输入学生信息记录
+				scount = input_stud(slist, scount);
+				break;
+			case 2:
+				//输入课程信息记录
+				ccount = input_course(clist, ccount);
+				break;
+			case 3:
+				//输入选课记录
+				sccount = input_select(sclist, sccount);
+				break;
+			case 0:
+				break;
+			}
+			system("pause");
+			break;
+		case 4:
+			printf("*****按条件删除记录*****\n");
+			switch (menu4_select())
 			{
 			case 1:
 				//根据姓名或学号删除学生记录，返回数组中的还剩下的记录数
@@ -141,12 +150,14 @@ int main()
 				sccount = delete_select(sclist, sccount);
 				printf("\n还剩下%d个选课记录\n", sccount);
 				break;
+			case 0:
+				break;
 			}
 			system("pause");
 			break;
-		case 4:
+		case 5:
 			printf("*****查询信息*****\n");
-			switch (menu2_select())
+			switch (menu5_select())
 			{
 			case 1:
 				//根据学号或姓名查询学生记录并显示
@@ -160,12 +171,14 @@ int main()
 				//根据学号查询成绩单，显示对应同学的所有课程成绩、平均分、学分以及排名情况，并显示
 				query_cjlist(cjlist, cjcount, clist, ccount, slist, scount);
 				break;
+			case 0:
+				break;
 			}
 			system("pause");
 			break;
-		case 5:
+		case 6:
 			printf("*****保存数据到文件*****\n");
-			switch (menu2_select())
+			switch (menu6_select())
 			{
 			case 1:
 				// 把学生信息表、课程信息表和选课信息表分别保存到文件中
@@ -174,6 +187,8 @@ int main()
 			case 2:
 				// 把成绩单保存到文件中，包括名次、学号、姓名、性别、各门课成绩、平均分以及总学分
 				write_to_file2(cjlist, 20, clist, ccount, slist, scount);
+				break;
+			case 0:
 				break;
 			}
 			system("pause");
@@ -195,32 +210,18 @@ int menu_select()
 		system("cls");					 /*  清屏  */
 		//选择功能菜单
 		printf("请选择一项功能:\n");
-		printf("1. 输入学生、课程、选课信息\n");
-		printf("2. 显示所有数据\n");
-		printf("3. 按条件删除记录\n");
-		printf("4. 查询信息\n");
-		printf("5. 保存数据到文件\n");
+		printf("1. 导入初始数据\n");
+		printf("2. 显示信息\n");
+		printf("3. 输入记录\n");
+		printf("4. 按条件删除记录\n");
+		printf("5. 查询信息\n");
+		printf("6. 批量导出数据\n");
 		printf("0. 退出系统\n");
 		c = getchar();
-	} while (c < '0' || c>'5');
+	} while (c < '0' || c>'6');
 	return(c - '0');
 }
 //显示选择菜单进行精确选择
-int menu1_select()
-{
-	char c;
-	do {
-		system("cls");					 /*  清屏  */
-		//选择功能菜单
-		printf("请选择:\n");
-		printf("1. 从文件中录入\n");
-		printf("2. 输入学生信息\n");
-		printf("3. 输入课程信息\n");
-		printf("4. 输入选课信息\n");
-		c = getchar();
-	} while (c < '1' || c>'4');
-	return(c - '0');
-}
 int menu2_select()
 {
 	char c;
@@ -231,8 +232,9 @@ int menu2_select()
 		printf("1. 显示所有学生信息\n");
 		printf("2. 显示所有课程信息\n");
 		printf("3. 显示所有成绩单信息\n");
+		printf("0. 返回主页面\n");
 		c = getchar();
-	} while (c < '1' || c>'3');
+	} while (c < '0' || c>'3');
 	return(c - '0');
 }
 int menu3_select()
@@ -242,11 +244,12 @@ int menu3_select()
 		system("cls");					 /*  清屏  */
 		//选择功能菜单
 		printf("请选择:\n");
-		printf("1. 删除学生记录\n");
-		printf("2. 删除课程记录\n");
-		printf("3. 删除选课记录\n");
+		printf("1. 输入学生信息\n");
+		printf("2. 输入课程信息\n");
+		printf("3. 输入选课信息\n");
+		printf("0. 返回主页面\n");
 		c = getchar();
-	} while (c < '1' || c>'3');
+	} while (c < '0' || c>'3');
 	return(c - '0');
 }
 int menu4_select()
@@ -256,11 +259,12 @@ int menu4_select()
 		system("cls");					 /*  清屏  */
 		//选择功能菜单
 		printf("请选择:\n");
-		printf("1. 查询学生记录\n");
-		printf("2. 查询课程记录\n");
-		printf("3. 查询选课记录\n");
+		printf("1. 删除学生记录\n");
+		printf("2. 删除课程记录\n");
+		printf("3. 删除选课记录\n");
+		printf("0. 返回主页面\n");
 		c = getchar();
-	} while (c < '1' || c>'3');
+	} while (c < '0' || c>'3');
 	return(c - '0');
 }
 int menu5_select()
@@ -270,10 +274,26 @@ int menu5_select()
 		system("cls");					 /*  清屏  */
 		//选择功能菜单
 		printf("请选择:\n");
+		printf("1. 查询学生记录\n");
+		printf("2. 查询课程记录\n");
+		printf("3. 查询选课记录\n");
+		printf("0. 返回主页面\n");
+		c = getchar();
+	} while (c < '0' || c>'3');
+	return(c - '0');
+}
+int menu6_select()
+{
+	char c;
+	do {
+		system("cls");					 /*  清屏  */
+		//选择功能菜单
+		printf("请选择:\n");
 		printf("1. 把学生信息表、课程信息表和选课信息表分别保存到文件中\n");
 		printf("2. 把成绩单保存到文件中\n");
+		printf("0. 返回主页面\n");
 		c = getchar();
-	} while (c < '1' || c>'2');
+	} while (c < '0' || c>'2');
 	return(c - '0');
 }
 //通过指定的文件装入相关必要信息
